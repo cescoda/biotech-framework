@@ -1,0 +1,2097 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biotech Valuation Framework — Tachyon Ventures</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ─────────────────────────────────────────
+   TOKENS
+───────────────────────────────────────── */
+:root {
+  --dark:        #1c1a14;
+  --dark-mid:    #2a271e;
+  --cream:       #f2ede4;
+  --cream-light: #faf8f4;
+  --cream-mid:   #ede8df;
+  --border:      #d8d1c4;
+  --border-lt:   #e8e2d8;
+  --gold:        #c47a2e;
+  --gold-dark:   #9a5f1f;
+  --rust:        #b85c38;
+  --ink:         #1c1a14;
+  --ink-mid:     #4a4538;
+  --ink-muted:   #8a8070;
+  --red:         #b03030;
+  --amber:       #9a6820;
+  --green:       #2a6b3a;
+  --sand:        #f8f5ef;
+}
+
+/* ─────────────────────────────────────────
+   RESET & BASE
+───────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+/* ─────────────────────────────────────────
+   HERO
+───────────────────────────────────────── */
+.hero {
+  background: var(--dark);
+  color: #f5f0e8;
+  padding: 52px 64px 44px;
+}
+.hero-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(245,240,232,0.45);
+  margin-bottom: 22px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.hero-eyebrow span { color: rgba(245,240,232,0.2); }
+.hero-title {
+  margin-bottom: 18px;
+  line-height: 0.93;
+}
+.hero-title-line1 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 64px;
+  font-weight: 900;
+  color: #f5f0e8;
+  letter-spacing: -0.02em;
+  display: block;
+}
+.hero-title-line2 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 64px;
+  font-weight: 700;
+  font-style: italic;
+  color: var(--gold);
+  letter-spacing: -0.02em;
+  display: block;
+}
+.hero-desc {
+  font-size: 13.5px;
+  color: rgba(245,240,232,0.55);
+  max-width: 400px;
+  line-height: 1.65;
+  font-weight: 300;
+  margin-bottom: 32px;
+}
+.hero-stats {
+  display: flex;
+  gap: 0;
+  border-top: 1px solid rgba(245,240,232,0.12);
+  padding-top: 22px;
+}
+.hero-stat {
+  padding-right: 36px;
+  margin-right: 36px;
+  border-right: 1px solid rgba(245,240,232,0.12);
+}
+.hero-stat:last-child { border-right: none; padding-right: 0; margin-right: 0; }
+.hero-stat-label {
+  display: block;
+  font-family: 'DM Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  color: rgba(245,240,232,0.38);
+  text-transform: uppercase;
+  margin-bottom: 3px;
+}
+.hero-stat-val {
+  font-family: 'Playfair Display', serif;
+  font-size: 19px;
+  font-weight: 700;
+  color: #f5f0e8;
+}
+
+/* ─────────────────────────────────────────
+   HORIZONTAL TAB NAV (sticky)
+───────────────────────────────────────── */
+.tab-nav {
+  position: sticky;
+  top: 0;
+  z-index: 300;
+  background: var(--cream-light);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: stretch;
+  padding: 0 64px;
+  overflow-x: auto;
+  gap: 0;
+}
+.tab-nav::-webkit-scrollbar { display: none; }
+.tab-nav a {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  text-decoration: none;
+  padding: 13px 16px 11px;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: color 0.15s, border-color 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.tab-nav a:hover { color: var(--ink); }
+.tab-nav a.active { color: var(--ink); border-bottom-color: var(--rust); }
+.tab-num { opacity: 0.4; font-size: 9px; }
+
+/* ─────────────────────────────────────────
+   BODY LAYOUT
+───────────────────────────────────────── */
+.layout {
+  display: grid;
+  grid-template-columns: 235px 1fr;
+}
+
+/* ─────────────────────────────────────────
+   SIDEBAR NAV
+───────────────────────────────────────── */
+.sidebar {
+  background: var(--sand);
+  border-right: 1px solid var(--border);
+  padding: 28px 0 40px;
+  position: sticky;
+  top: 44px;
+  height: calc(100vh - 44px);
+  overflow-y: auto;
+}
+.sidebar::-webkit-scrollbar { width: 3px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border); }
+.sidebar-group {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  padding: 18px 24px 6px;
+  opacity: 0.65;
+}
+.sidebar a {
+  display: block;
+  padding: 7px 24px;
+  font-family: 'Source Serif 4', serif;
+  font-size: 13px;
+  color: var(--ink-mid);
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  transition: all 0.12s;
+  line-height: 1.4;
+}
+.sidebar a:hover {
+  color: var(--ink);
+  background: rgba(196,122,46,0.06);
+}
+.sidebar a.active {
+  color: var(--gold-dark);
+  border-left-color: var(--gold);
+  background: rgba(196,122,46,0.08);
+  font-weight: 600;
+}
+
+/* ─────────────────────────────────────────
+   CONTENT AREA
+───────────────────────────────────────── */
+.content {
+  padding: 52px 60px 80px;
+  max-width: 980px;
+}
+
+/* ─────────────────────────────────────────
+   SECTION STRUCTURE
+───────────────────────────────────────── */
+.section { margin-bottom: 76px; }
+
+.section-eyebrow {
+  display: block;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 10px;
+}
+.section-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 34px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  line-height: 1.12;
+  margin-bottom: 16px;
+}
+.section-rule {
+  height: 1px;
+  background: var(--border);
+  margin-bottom: 24px;
+}
+.section-sub {
+  font-size: 14px;
+  color: var(--ink-mid);
+  margin-bottom: 28px;
+  max-width: 660px;
+  line-height: 1.75;
+  font-style: italic;
+  font-weight: 300;
+}
+
+/* ─────────────────────────────────────────
+   STAT ROW (big numbers like 80/20)
+───────────────────────────────────────── */
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  border: 1px solid var(--border);
+  background: var(--cream-light);
+  margin-bottom: 28px;
+}
+.stat-box {
+  padding: 20px 20px 18px;
+  text-align: center;
+  border-right: 1px solid var(--border);
+}
+.stat-box:last-child { border-right: none; }
+.stat-num {
+  display: block;
+  font-family: 'Playfair Display', serif;
+  font-size: 34px;
+  font-weight: 900;
+  color: var(--gold);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.stat-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+/* ─────────────────────────────────────────
+   PROTOCOL CARDS (main content blocks)
+───────────────────────────────────────── */
+.proto-card {
+  background: var(--cream-light);
+  border: 1px solid var(--border);
+  padding: 28px 32px;
+  margin-bottom: 14px;
+}
+.proto-tag {
+  display: inline-block;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  background: var(--cream-mid);
+  border: 1px solid var(--border);
+  padding: 3px 9px;
+  margin-bottom: 14px;
+}
+.proto-num {
+  float: right;
+  font-family: 'DM Mono', monospace;
+  font-size: 22px;
+  color: var(--border);
+  line-height: 1;
+}
+.proto-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 10px;
+  line-height: 1.2;
+}
+.proto-body {
+  font-size: 13.5px;
+  color: var(--ink-mid);
+  line-height: 1.72;
+  margin-bottom: 12px;
+}
+.proto-body strong { color: var(--ink); font-weight: 600; }
+.proto-insight {
+  font-size: 13px;
+  font-style: italic;
+  color: var(--ink-mid);
+  border-left: 3px solid var(--gold);
+  background: var(--cream);
+  padding: 10px 14px;
+  margin-bottom: 12px;
+}
+.proto-insight strong { font-style: normal; color: var(--ink); font-weight: 600; }
+.source-tags { display: flex; flex-wrap: wrap; gap: 5px; padding-top: 14px; border-top: 1px solid var(--border-lt); margin-top: 14px; }
+.source-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.05em;
+  color: var(--ink-muted);
+  background: var(--cream-mid);
+  border: 1px solid var(--border);
+  padding: 3px 8px;
+}
+
+/* ─────────────────────────────────────────
+   CARD GRID
+───────────────────────────────────────── */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.card {
+  background: var(--cream-light);
+  border: 1px solid var(--border);
+  padding: 22px 24px;
+  transition: border-color 0.15s;
+}
+.card:hover { border-color: var(--gold); }
+.card-label {
+  display: block;
+  font-family: 'DM Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+  margin-bottom: 8px;
+}
+.card-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 8px;
+  line-height: 1.25;
+}
+.card-body {
+  font-size: 12.5px;
+  color: var(--ink-mid);
+  line-height: 1.65;
+}
+
+/* ─────────────────────────────────────────
+   TABLES
+───────────────────────────────────────── */
+.table-wrap {
+  overflow-x: auto;
+  margin-bottom: 24px;
+  border: 1px solid var(--border);
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  background: var(--cream-light);
+}
+th {
+  font-family: 'DM Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-align: left;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--cream-mid);
+  color: var(--ink-muted);
+  font-weight: 400;
+}
+td {
+  padding: 11px 16px;
+  border-bottom: 1px solid var(--border-lt);
+  vertical-align: top;
+  color: var(--ink);
+  font-size: 13px;
+  font-family: 'Source Serif 4', serif;
+}
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(196,122,46,0.03); }
+td.mono { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--ink-mid); }
+td.accent { color: var(--gold-dark); font-weight: 600; }
+td.warn { color: var(--amber); }
+td.good { color: var(--green); }
+td.danger { color: var(--red); }
+
+/* ─────────────────────────────────────────
+   SCORECARD
+───────────────────────────────────────── */
+.scorecard {
+  background: var(--cream-light);
+  border: 1px solid var(--border);
+  padding: 28px 32px;
+  margin-bottom: 24px;
+}
+.scorecard-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.score-row {
+  display: grid;
+  grid-template-columns: 200px 1fr 60px;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+.score-label { font-size: 12.5px; color: var(--ink); }
+.score-bar-wrap { background: var(--cream-mid); height: 5px; }
+.score-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--rust), var(--gold));
+  transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.score-val {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: var(--gold-dark);
+  text-align: right;
+}
+
+/* ─────────────────────────────────────────
+   rNPV CALCULATOR
+───────────────────────────────────────── */
+.rnpv-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.input-group {
+  background: var(--cream-light);
+  border: 1px solid var(--border);
+  padding: 16px 20px;
+}
+.input-label {
+  display: block;
+  font-family: 'DM Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  margin-bottom: 8px;
+}
+.input-row { display: flex; align-items: center; gap: 10px; }
+input[type=range] {
+  flex: 1;
+  appearance: none;
+  height: 2px;
+  background: var(--border);
+  outline: none;
+  cursor: pointer;
+}
+input[type=range]::-webkit-slider-thumb {
+  appearance: none;
+  width: 12px; height: 12px;
+  background: var(--gold);
+  cursor: pointer;
+  border-radius: 50%;
+}
+.input-display {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  color: var(--gold-dark);
+  min-width: 60px;
+  text-align: right;
+}
+.rnpv-result {
+  background: var(--dark);
+  padding: 28px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.rnpv-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(245,240,232,0.4);
+  margin-bottom: 4px;
+}
+.rnpv-value {
+  font-family: 'Playfair Display', serif;
+  font-size: 44px;
+  font-weight: 900;
+  color: var(--gold);
+  line-height: 1;
+}
+.rnpv-range {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: rgba(245,240,232,0.38);
+  margin-top: 6px;
+}
+.rnpv-entry-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(245,240,232,0.4);
+  margin-bottom: 4px;
+}
+.rnpv-entry {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #f5f0e8;
+}
+
+/* ─────────────────────────────────────────
+   BENCHMARKS
+───────────────────────────────────────── */
+.benchmark-row {
+  display: grid;
+  grid-template-columns: 150px 1fr 100px 100px;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-lt);
+}
+.bm-stage { font-size: 13px; color: var(--ink); }
+.bm-bar-wrap { background: var(--cream-mid); height: 18px; position: relative; }
+.bm-bar { height: 100%; display: flex; align-items: center; padding-left: 8px; font-family: 'DM Mono', monospace; font-size: 10.5px; }
+.bm-val { font-family: 'DM Mono', monospace; font-size: 12px; text-align: right; color: var(--ink-mid); }
+
+/* ─────────────────────────────────────────
+   CALLOUTS
+───────────────────────────────────────── */
+.callout {
+  border-left: 3px solid var(--gold);
+  background: rgba(196,122,46,0.06);
+  padding: 14px 18px;
+  margin-bottom: 18px;
+  font-size: 13.5px;
+  font-style: italic;
+  color: var(--ink-mid);
+}
+.callout.warn { border-color: var(--amber); background: rgba(154,104,32,0.06); }
+.callout.danger { border-color: var(--red); background: rgba(176,48,48,0.06); }
+.callout strong {
+  display: block;
+  margin-bottom: 5px;
+  font-family: 'Playfair Display', serif;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* ─────────────────────────────────────────
+   PILLS
+───────────────────────────────────────── */
+.pill {
+  display: inline-block;
+  font-family: 'DM Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.05em;
+  padding: 2px 9px;
+  border: 1px solid var(--border);
+  background: var(--cream-mid);
+  color: var(--ink-muted);
+  margin: 2px;
+}
+.pill-green { color: var(--green); border-color: rgba(42,107,58,0.3); background: rgba(42,107,58,0.06); }
+.pill-orange { color: var(--amber); border-color: rgba(154,104,32,0.3); background: rgba(154,104,32,0.06); }
+.pill-red { color: var(--red); border-color: rgba(176,48,48,0.3); background: rgba(176,48,48,0.06); }
+.pill-blue { color: #2a5c8a; border-color: rgba(42,92,138,0.3); background: rgba(42,92,138,0.05); }
+
+/* ─────────────────────────────────────────
+   STAGE MATRIX
+───────────────────────────────────────── */
+.stage-matrix {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1px;
+  background: var(--border);
+  margin-bottom: 28px;
+}
+.stage-cell { background: var(--cream-light); padding: 18px 12px; text-align: center; }
+.stage-cell.active { background: rgba(196,122,46,0.09); }
+.stage-name {
+  display: block;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+  margin-bottom: 8px;
+}
+.stage-raise {
+  display: block;
+  font-family: 'Playfair Display', serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+.stage-val-range { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--ink-muted); }
+
+/* ─────────────────────────────────────────
+   FRAMEWORK FLOW
+───────────────────────────────────────── */
+.framework-flow {
+  display: flex;
+  align-items: stretch;
+  margin-bottom: 28px;
+  overflow-x: auto;
+  gap: 0;
+}
+.flow-step {
+  flex: 1;
+  min-width: 120px;
+  background: var(--cream-light);
+  border: 1px solid var(--border);
+  border-right: none;
+  padding: 16px 14px;
+  position: relative;
+}
+.flow-step:last-child { border-right: 1px solid var(--border); }
+.flow-step::after {
+  content: '→';
+  position: absolute;
+  right: -11px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--ink-muted);
+  font-size: 14px;
+  z-index: 2;
+  background: var(--cream);
+  padding: 0 2px;
+}
+.flow-step:last-child::after { display: none; }
+.flow-num { display: block; font-family: 'DM Mono', monospace; font-size: 10px; color: var(--gold); margin-bottom: 6px; }
+.flow-title { font-family: 'Playfair Display', serif; font-size: 13px; font-weight: 700; color: var(--ink); margin-bottom: 5px; }
+.flow-detail { font-size: 11px; color: var(--ink-muted); line-height: 1.5; }
+
+/* ─────────────────────────────────────────
+   UTILITIES
+───────────────────────────────────────── */
+.mt-16 { margin-top: 16px; }
+.mt-24 { margin-top: 24px; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.highlight { color: var(--gold-dark); font-weight: 600; }
+.mono-text { font-family: 'DM Mono', monospace; font-size: 12px; }
+
+/* ─────────────────────────────────────────
+   FOOTER
+───────────────────────────────────────── */
+footer {
+  background: var(--dark);
+  padding: 24px 64px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.f-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(245,240,232,0.35);
+}
+
+/* ─────────────────────────────────────────
+   SCROLLBAR
+───────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* ─────────────────────────────────────────
+   RESPONSIVE
+───────────────────────────────────────── */
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  .content { padding: 28px 24px; }
+  .rnpv-grid { grid-template-columns: 1fr; }
+  .two-col { grid-template-columns: 1fr; }
+  .hero { padding: 36px 24px 32px; }
+  .hero-title-line1, .hero-title-line2 { font-size: 42px; }
+  .tab-nav { padding: 0 24px; }
+  .stage-matrix { grid-template-columns: repeat(3, 1fr); }
+  .score-row { grid-template-columns: 140px 1fr 50px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════ HERO ══════════════ -->
+<header class="hero">
+  <div class="hero-eyebrow">
+    Tachyon Ventures — Internal
+    <span>·</span>
+    Deep Tech VC
+    <span>·</span>
+    Biotech + TechBio
+    <span>·</span>
+    v2.0 · 2025
+  </div>
+  <div class="hero-title">
+    <span class="hero-title-line1">Biotech Valuation</span>
+    <span class="hero-title-line2">Framework</span>
+  </div>
+  <p class="hero-desc">
+    Integrated methodology for early-to-mid stage biotech and TechBio — from pre-IND to Phase II. Updated with 2024–25 intelligence from OrbiMed, RA Capital, ARCH, Novo Holdings, a16z, and 15 leading deep tech investors.
+  </p>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <span class="hero-stat-label">Methods</span>
+      <span class="hero-stat-val">6 Integrated</span>
+    </div>
+    <div class="hero-stat">
+      <span class="hero-stat-label">VC Intelligence</span>
+      <span class="hero-stat-val">15 Top Funds</span>
+    </div>
+    <div class="hero-stat">
+      <span class="hero-stat-label">Asset Classes</span>
+      <span class="hero-stat-val">Biotech + TechBio</span>
+    </div>
+    <div class="hero-stat">
+      <span class="hero-stat-label">Benchmarks</span>
+      <span class="hero-stat-val">2025 Updated</span>
+    </div>
+  </div>
+</header>
+
+<!-- ══════════════ TAB NAV ══════════════ -->
+<div class="tab-nav">
+  <a href="#overview" class="active"><span class="tab-num">00 ·</span>Overview</a>
+  <a href="#market-context"><span class="tab-num">00B ·</span>Market 2025</a>
+  <a href="#stage-map"><span class="tab-num">01 ·</span>Stage Map</a>
+  <a href="#science-gate"><span class="tab-num">01B ·</span>Science Gate</a>
+  <a href="#rnpv"><span class="tab-num">02 ·</span>rNPV</a>
+  <a href="#scorecard"><span class="tab-num">03 ·</span>Scorecard</a>
+  <a href="#comps"><span class="tab-num">04 ·</span>Comps</a>
+  <a href="#techbio"><span class="tab-num">05B ·</span>TechBio</a>
+  <a href="#investor-lens"><span class="tab-num">09B ·</span>Investor Lens</a>
+  <a href="#decision"><span class="tab-num">10 ·</span>Decision</a>
+</div>
+
+<!-- ══════════════ MAIN LAYOUT ══════════════ -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-group">Framework</div>
+    <a href="#overview" class="active">Overview</a>
+    <a href="#market-context">2025 Market Context</a>
+    <a href="#stage-map">Stage Map</a>
+    <div class="sidebar-group">Methods</div>
+    <a href="#science-gate">Science Gate</a>
+    <a href="#rnpv">rNPV Model</a>
+    <a href="#scorecard">Scorecard</a>
+    <a href="#comps">Comps & Benchmarks</a>
+    <a href="#real-options">Real Options</a>
+    <a href="#techbio">TechBio / AI-Native</a>
+    <div class="sidebar-group">Diligence</div>
+    <a href="#science">Science & IP</a>
+    <a href="#team">Team</a>
+    <a href="#market">Market & Competition</a>
+    <a href="#redflags">Red Flags</a>
+    <div class="sidebar-group">Intelligence</div>
+    <a href="#investor-lens">Investor Lens</a>
+    <div class="sidebar-group">Output</div>
+    <a href="#decision">Decision Matrix</a>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="content">
+<!-- OVERVIEW -->
+    <div class="section" id="overview">
+      <span class="section-eyebrow">Protocol 00</span>
+      <h2 class="section-title">Framework Overview</h2>
+      <div class="section-rule"></div>
+
+      <div class="stat-row">
+        <div class="stat-box">
+          <span class="stat-num">6</span>
+          <span class="stat-label">Valuation Methods</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-num">rNPV</span>
+          <span class="stat-label">Gold Standard</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-num">2</span>
+          <span class="stat-label">Asset Classes</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-num">15</span>
+          <span class="stat-label">VC Lenses</span>
+        </div>
+      </div>
+      <p class="section-sub">
+        Biotech valuation defies standard DCF logic. Drugs fail, timelines stretch, and the science itself is often the primary value driver. This framework integrates six complementary approaches — weighting each by stage, modality, and data maturity — updated with 2024–2025 intelligence from the world's top biotech investors.
+      </p>
+
+      <div class="framework-flow">
+        <div class="flow-step">
+          <div class="flow-num">01</div>
+          <div class="flow-title">Science Gate</div>
+          <div class="flow-detail">Pre-model biology check. Fail fast before building rNPV. (RA Capital method)</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num">02</div>
+          <div class="flow-title">Company Type</div>
+          <div class="flow-detail">Drug asset vs. platform vs. TechBio/AI-native — drives which methods apply</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num">03</div>
+          <div class="flow-title">Stage Mapping</div>
+          <div class="flow-detail">Discovery → Phase II milestone alignment & 2025 benchmark anchoring</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num">04</div>
+          <div class="flow-title">rNPV Build</div>
+          <div class="flow-detail">Risk-adjusted NPV across pipeline assets with PTRS decoupled from discount rate</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num">05</div>
+          <div class="flow-title">Comps + Scorecard</div>
+          <div class="flow-detail">Sector, stage, deal comparables + qualitative premium/discount overlay</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num">06</div>
+          <div class="flow-title">Platform Floor</div>
+          <div class="flow-detail">Technology asset value independent of any single drug outcome (TechBio/ARTIS principle)</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num">07</div>
+          <div class="flow-title">Decision</div>
+          <div class="flow-detail">Entry price, structure, conviction-sized position, follow-on strategy</div>
+        </div>
+      </div>
+
+      <div class="callout">
+        <strong>Core Principle — Updated for 2025</strong>
+        At pre-clinical through Phase I, value lives in optionality and the team's ability to generate de-risking data. At Phase II, value migrates to probability-weighted peak sales forecasts. For TechBio/AI-native platforms, an independent technology floor exists regardless of individual drug outcomes. The 2024–25 market has shifted decisively toward clinical validation before significant capital deployment — price accordingly.
+      </div>
+
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-label">Primary Method</div>
+          <div class="card-title">Risk-Adjusted NPV</div>
+          <div class="card-body">Discount future cash flows by cumulative PTRS (probability of technical and regulatory success). Key: the discount rate reflects only systematic market risk — program-specific execution risk is handled through explicit phase-transition probabilities, not bundled into the rate. (Harvard/Analysis Group, 2024)</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Calibration Tool</div>
+          <div class="card-title">Comparable Transactions</div>
+          <div class="card-body">Anchor to real deal values: M&A precedents, licensing fees, and public company EV/pipeline ratios stratified by modality and stage. OrbiMed uses peak sales estimates from Bloomberg and Visible Alpha alongside EV/pipeline ratios as a cross-check on private valuations.</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Qualitative Layer</div>
+          <div class="card-title">Venture Scorecard</div>
+          <div class="card-body">Structured scoring on team, IP, market, platform vs. single-asset, and competitive moat. Translates into premium/discount on the rNPV output. Dominant method at pre-IND; weight declines as clinical data accumulates.</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Platform Signal</div>
+          <div class="card-title">Real Options + Platform Floor</div>
+          <div class="card-body">For platform and TechBio companies, model optionality on follow-on indications, licensing rights, and data asset value. ARTIS Ventures principle: even if the drug fails FDA, there's still technology value on the table — the platform floor is a separate, additive valuation layer.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2025 MARKET CONTEXT -->
+    <div class="section" id="market-context">
+      <span class="section-eyebrow">Protocol 00B</span>
+      <h2 class="section-title">2025 Market Context</h2>
+      <div class="section-rule"></div>
+      <p class="section-sub">
+        The 2020–21 biotech boom, followed by the 2022–23 correction, has produced a structurally different investment environment. Valuations and investor behavior have reset in ways that materially affect how you should enter and price deals today.
+      </p>
+
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-label">Macro Shift</div>
+          <div class="card-title">Flight to Quality</div>
+          <div class="card-body">The market has shifted decisively from the broad-based approach of 2020–21 to a more selective, thesis-driven strategy. Investors are writing larger checks for fewer companies, concentrating on proven teams, validated science, and clear market opportunity. Seed and early-stage investments face significant capital constraints as emerging managers struggle to form new funds.</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Capital Flows</div>
+          <div class="card-title">$26B Deployed in 2024</div>
+          <div class="card-body">JPMorgan characterized 2024 as "strong" for biopharma VC: $26B invested across 416 rounds (up from $23.3B / 462 rounds in 2023). US healthcare startups raised $23B in 2024, with ~30% flowing to AI-driven firms. Mega-rounds ($100M+) are increasingly dominant — 7 biotech companies raised $300M+ in first-time financings in 2024.</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Entry Point Shift</div>
+          <div class="card-title">Later-Stage Bias</div>
+          <div class="card-body">Top-tier investors including Novo Holdings and Sofinnova have shifted entry points later — preferring late preclinical or clinical-stage compounds with validated biology. Investors are reducing risk with a strong preference for animal validation or clinical data before follow-on investment. Pre-IND bets require exceptional teams and platforms to attract institutional capital.</div>
+        </div>
+        <div class="card">
+          <div class="card-label">New Category</div>
+          <div class="card-title">TechBio Emergence</div>
+          <div class="card-body">AI-native drug discovery platforms have become a distinct asset class attracting dedicated capital. 31 AI-discovered assets are in clinical phases as of 2025. The Recursion–Exscientia merger ($688M) validated that investors will pay for AI platforms and data assets independent of individual drug outcomes. Tech giants (Google, NVIDIA, Microsoft) are taking direct positions in biotech.</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Exit Environment</div>
+          <div class="card-title">M&A Remains Primary</div>
+          <div class="card-body">M&A exits in 2024 totaled $82B — down from $178B in 2023 — but deal volume remained healthy. IPO markets have become highly selective; only the strongest Phase II readouts qualify. Strategic acquirers (Takeda, Novartis, AstraZeneca) are driving M&A to refresh pipelines expiring exclusivity on blockbusters. An estimated $200B in pharma revenues face patent cliffs 2024–2028.</div>
+        </div>
+        <div class="card">
+          <div class="card-label">IRA Impact</div>
+          <div class="card-title">Pricing Risk is Real</div>
+          <div class="card-body">The Inflation Reduction Act introduced Medicare price negotiation after certain post-approval windows. Small molecule drugs face earlier negotiation timelines than biologics (9 vs. 13 years), creating a structural bias toward biologics, cell/gene therapies, and rare disease assets. Adjust peak sales projections and revenue duration assumptions accordingly for any small molecule in common indications.</div>
+        </div>
+      </div>
+
+      <div class="table-wrap mt-16">
+        <table>
+          <thead>
+            <tr><th>Metric</th><th>2021 Peak</th><th>2023 Trough</th><th>2025 Current</th><th>Implication for Entry Price</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="accent">Global Biotech VC Deployed</td>
+              <td class="mono good">~$44B</td>
+              <td class="mono danger">~$23B</td>
+              <td class="mono warn">~$26B+</td>
+              <td>Recovery underway but selectivity high; premiums require clinical data</td>
+            </tr>
+            <tr>
+              <td class="accent">Series A Avg Pre-Money (2025)</td>
+              <td class="mono good">$120–200M+</td>
+              <td class="mono danger">$40–80M</td>
+              <td class="mono warn">~$79M avg</td>
+              <td>Anchored to science quality; platform premia more defensible than 2023</td>
+            </tr>
+            <tr>
+              <td class="accent">Series B Avg Pre-Money</td>
+              <td class="mono good">$300–600M</td>
+              <td class="mono danger">$100–200M</td>
+              <td class="mono warn">$150M+ (strong data)</td>
+              <td>Positive Phase II data required; no clinical signal = difficult round</td>
+            </tr>
+            <tr>
+              <td class="accent">AI-Biotech VC (TechBio)</td>
+              <td class="mono">~$12.5B</td>
+              <td class="mono danger">~$4.8B</td>
+              <td class="mono good">~$6.7B+ (surging)</td>
+              <td>Dedicated TechBio funds forming; platform valuation premium expanding</td>
+            </tr>
+            <tr>
+              <td class="accent">Biotech M&A Deal Value</td>
+              <td class="mono">$80B</td>
+              <td class="mono good">$178B (2023)</td>
+              <td class="mono warn">$82B (2024)</td>
+              <td>Volume healthy, average deal size lower; Phase II exit window remains best</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- STAGE MAP -->
+    <div class="section" id="stage-map">
+      <span class="section-eyebrow">Protocol 01</span>
+      <h2 class="section-title">Stage Map & 2025 Valuation Benchmarks</h2>
+      <div class="section-rule"></div>
+      <p class="section-sub">Pre-money valuations are driven less by financial performance and more by the quality and quantity of de-risking events completed. Benchmarks updated to reflect 2025 market realities — the 2021 peak figures are no longer valid anchors. Average Series A pre-money reached ~$79M in 2025; strong Series B companies cross $150M.</p>
+
+      <div class="stage-matrix">
+        <div class="stage-cell">
+          <div class="stage-name">Seed / Pre-A</div>
+          <div class="stage-raise">$2–10M</div>
+          <div class="stage-val-range">$5–30M pre</div>
+        </div>
+        <div class="stage-cell">
+          <div class="stage-name">Series A</div>
+          <div class="stage-raise">$25–80M</div>
+          <div class="stage-val-range">~$79M avg pre (2025)</div>
+        </div>
+        <div class="stage-cell active">
+          <div class="stage-name">Series B</div>
+          <div class="stage-raise">$60–200M</div>
+          <div class="stage-val-range">$150M+ (clinical data)</div>
+        </div>
+        <div class="stage-cell">
+          <div class="stage-name">Series C</div>
+          <div class="stage-raise">$100–300M</div>
+          <div class="stage-val-range">$300M–1B+ pre</div>
+        </div>
+        <div class="stage-cell">
+          <div class="stage-name">Pre-IPO / D+</div>
+          <div class="stage-raise">$150–500M+</div>
+          <div class="stage-val-range">$600M–3B+ pre</div>
+        </div>
+      </div>
+
+      <div class="callout warn">
+        <strong>2025 Investor Behavior Signal</strong>
+        Novo Holdings, Sofinnova, and Catalio have all explicitly shifted entry preferences to late preclinical or early clinical-stage assets. Strong Series A fundraising in 2024–25 ($100M+) is concentrated in companies with Phase I safety data or compelling platform partnerships. For pre-IND companies to access top-tier capital, the bar is: exceptional founders, validated target biology, and a credible path to IND within 12–18 months.
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Development Stage</th>
+              <th>Key Value Drivers</th>
+              <th>Primary Method</th>
+              <th>PoTS Range</th>
+              <th>Typical Discount Rate</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="accent">Discovery / Target ID</td>
+              <td>Team, IP, platform breadth, target rationale</td>
+              <td>Scorecard + comps</td>
+              <td class="mono danger">3–8%</td>
+              <td class="mono">40–60%</td>
+            </tr>
+            <tr>
+              <td class="accent">Lead Optimization / IND-enabling</td>
+              <td>Compound selectivity, PK profile, first animal data</td>
+              <td>Scorecard + early rNPV</td>
+              <td class="mono warn">6–12%</td>
+              <td class="mono">35–50%</td>
+            </tr>
+            <tr>
+              <td class="accent">Phase I</td>
+              <td>Safety profile, dosing, biomarker signals</td>
+              <td>rNPV + comps</td>
+              <td class="mono warn">12–20%</td>
+              <td class="mono">25–40%</td>
+            </tr>
+            <tr>
+              <td class="accent">Phase Ib/IIa</td>
+              <td>Early efficacy, PoC data, patient responder rate</td>
+              <td>rNPV (primary)</td>
+              <td class="mono good">20–35%</td>
+              <td class="mono">20–30%</td>
+            </tr>
+            <tr>
+              <td class="accent">Phase IIb</td>
+              <td>Dose selection, endpoint validation, FDA dialogue</td>
+              <td>rNPV + peak sales model</td>
+              <td class="mono good">25–45%</td>
+              <td class="mono">15–25%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout warn">
+        <strong>Platform Premium</strong>
+        Platform companies (e.g., ADC linker platforms, RNA delivery systems, gene editing) typically command a 1.5–3× premium over single-asset peers at the same stage. The premium reflects the option value on follow-on programs and proprietary data generating capacity.
+      </div>
+    </div>
+
+    <!-- SCIENCE GATE -->
+    <div class="section" id="science-gate">
+      <span class="section-eyebrow">Protocol 01B</span>
+      <h2 class="section-title">Science Gate — Pre-Model Biology Check</h2>
+      <div class="section-rule"></div>
+      <p class="section-sub">
+        Adapted from RA Capital's evidence-based investing methodology: before building any financial model, the science must pass a structured biology gate. Garbage-in on scientific assumptions destroys any downstream valuation. This gate is binary — fail any hard stop, and rNPV work doesn't begin.
+      </p>
+
+      <div class="callout">
+        <strong>RA Capital Principle</strong>
+        RA Capital's process starts with a single question: does the science make sense? The firm evaluates the underlying biology of every company's approach as the foundation of the entire investment thesis — not as a formality, but as the primary filter. Deep scientific knowledge paired with strategic capital is the investment model. Financial modeling comes second.
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Gate</th><th>Question</th><th>Hard Stop Criteria</th><th>Green Light Criteria</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="accent">Target Validation</td>
+              <td>Is there human genetic evidence the target is causal in disease?</td>
+              <td class="danger">Animal-only, no human genetics link, no loss-of-function data</td>
+              <td class="good">GWAS support, Mendelian randomization, or clinical LoF/GoF evidence</td>
+            </tr>
+            <tr>
+              <td class="accent">Biological Rationale</td>
+              <td>Is the mechanism of action fully elucidated and logical?</td>
+              <td class="danger">"We believe it works through X" without direct mechanistic evidence</td>
+              <td class="good">Structural biology confirmed, on-target selectivity panel clean, MOA directly demonstrated</td>
+            </tr>
+            <tr>
+              <td class="accent">Data Reproducibility</td>
+              <td>Have key results been independently replicated?</td>
+              <td class="danger">Single-lab results, no replication, unexpected difficulty reproducing key data</td>
+              <td class="good">CRO confirmation, independent academic replication, or multi-site preclinical package</td>
+            </tr>
+            <tr>
+              <td class="accent">Translational Bridge</td>
+              <td>Is there a credible path from animal to human?</td>
+              <td class="danger">Rodent-only efficacy with no translatable biomarker or mechanistic bridge</td>
+              <td class="good">Multi-species data, validated pharmacodynamic biomarker, disease-relevant model</td>
+            </tr>
+            <tr>
+              <td class="accent">PTRS Sanity Check</td>
+              <td>Does the scientific premise support the assumed probability of success?</td>
+              <td class="danger">Team using top-decile PTRS assumptions for bottom-decile evidence quality</td>
+              <td class="good">PTRS assumptions benchmarked to modality and indication, stress-tested with external KOL</td>
+            </tr>
+            <tr>
+              <td class="accent">KOL Alignment</td>
+              <td>Do leading experts in the field agree the science is sound?</td>
+              <td class="danger">Founding team cannot name 2+ independent KOLs who support the approach</td>
+              <td class="good">SAB includes active field-defining KOLs who have reviewed the data and engaged seriously</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout warn">
+        <strong>ARCH Venture Insight</strong>
+        ARCH's model is built on being willing to sit down with a scientist who has only a lab notebook. But the prerequisite is still fundamental scientific conviction — they back great science first, then build the company around it. For investors who are not company co-founders, the bar must be even higher: you need both great science AND an existing team capable of executing toward a clinical inflection point.
+      </div>
+    </div>
+
+    <!-- rNPV -->
+    <div class="section" id="rnpv">
+      <span class="section-eyebrow">Protocol 02</span>
+      <h2 class="section-title">Risk-Adjusted NPV (rNPV) Model</h2>
+      <div class="section-rule"></div>
+      <p class="section-sub">
+        The rNPV adjusts each future cash flow (or milestone) by its probability of being realized, then discounts at a venture-appropriate rate. The formula: <span class="highlight">rNPV = Σ [CF_t × PoTS_t] / (1+r)^t − Development Costs</span>. Build one model per asset; sum across the pipeline.
+      </p>
+
+      <!-- Interactive Calculator -->
+      <div style="background: var(--surface); border: 1px solid var(--border); padding: 24px; margin-bottom: 24px;">
+        <div style="font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border);">
+          Interactive rNPV Estimator — Single Asset
+        </div>
+        <div class="rnpv-grid">
+          <div class="input-group">
+            <label class="input-label">Peak Annual Sales ($M)</label>
+            <div class="input-row">
+              <input type="range" id="peakSales" min="50" max="5000" value="800" step="50" oninput="calcRNPV()">
+              <span class="input-display" id="peakSalesVal">$800M</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="input-label">Operating Margin (%)</label>
+            <div class="input-row">
+              <input type="range" id="margin" min="20" max="80" value="55" oninput="calcRNPV()">
+              <span class="input-display" id="marginVal">55%</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="input-label">Years to Peak Sales</label>
+            <div class="input-row">
+              <input type="range" id="years" min="4" max="16" value="10" oninput="calcRNPV()">
+              <span class="input-display" id="yearsVal">10 yrs</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="input-label">Current PoTS (%)</label>
+            <div class="input-row">
+              <input type="range" id="pots" min="3" max="50" value="15" oninput="calcRNPV()">
+              <span class="input-display" id="potsVal">15%</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="input-label">Royalty / Market Share (%)</label>
+            <div class="input-row">
+              <input type="range" id="royalty" min="5" max="100" value="100" oninput="calcRNPV()">
+              <span class="input-display" id="royaltyVal">100%</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="input-label">Discount Rate (%)</label>
+            <div class="input-row">
+              <input type="range" id="discountRate" min="10" max="60" value="30" oninput="calcRNPV()">
+              <span class="input-display" id="discountRateVal">30%</span>
+            </div>
+          </div>
+        </div>
+        <div class="rnpv-result">
+          <div>
+            <div class="rnpv-label">Estimated rNPV</div>
+            <div class="rnpv-value" id="rnpvResult">$47M</div>
+            <div class="rnpv-range" id="rnpvRange">Bear: $18M — Bull: $112M</div>
+          </div>
+          <div style="text-align: right;">
+            <div class="rnpv-label">Implied Pre-Money Entry</div>
+            <div style="font-family: 'DM Mono', monospace; font-size: 20px; font-weight: 500; color: var(--accent2);" id="entryRange">$35–70M</div>
+            <div style="font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted);" id="multipleNote">at 0.75–1.5× rNPV</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Industry PoTS Benchmarks (FDA)</th>
+              <th>Small Molecule</th>
+              <th>Biologic</th>
+              <th>Cell / Gene Therapy</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Discovery → IND</td><td class="mono">~30%</td><td class="mono">~25%</td><td class="mono">~20%</td></tr>
+            <tr><td>Phase I → Approval</td><td class="mono">~13%</td><td class="mono">~15%</td><td class="mono">~8%</td></tr>
+            <tr><td>Phase II → Approval</td><td class="mono">~20%</td><td class="mono">~25%</td><td class="mono">~15%</td></tr>
+            <tr><td>Phase III → Approval</td><td class="mono">~55%</td><td class="mono">~65%</td><td class="mono">~50%</td></tr>
+            <tr><td>Oncology (all stages)</td><td class="mono warn">~5%</td><td class="mono warn">~6%</td><td class="mono warn">~4%</td></tr>
+            <tr><td>Rare Disease (with ODD)</td><td class="mono good">~25%</td><td class="mono good">~28%</td><td class="mono good">~18%</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout">
+        <strong>rNPV Inputs — Key Assumptions to Stress Test</strong>
+        Peak sales (±50%), market penetration curve, competitive entrants at approval, pricing erosion, development timeline slippage (+2 years is common), and probability adjustments for biomarker-selected populations vs. broad label.
+      </div>
+    </div>
+
+    <!-- SCORECARD -->
+    <div class="section" id="scorecard">
+      <span class="section-eyebrow">Protocol 03</span>
+      <h2 class="section-title">Venture Scorecard Method</h2>
+      <div class="section-rule"></div>
+      <p class="section-sub">
+        For very early-stage companies (pre-IND, seed/Series A), comparable rNPV models are too speculative to anchor. Use a structured scorecard to derive a premium or discount vs. the median comparable deal in the sector.
+      </p>
+
+      <div class="scorecard">
+        <div class="scorecard-title">Example Scorecard — Benchmark: $40M Series A pre-money</div>
+        <div class="score-row">
+          <div class="score-label">Management Team Quality</div>
+          <div class="score-bar-wrap"><div class="score-bar" style="width: 90%"></div></div>
+          <div class="score-val">+30%</div>
+        </div>
+        <div class="score-row">
+          <div class="score-label">Opportunity Size (TAM)</div>
+          <div class="score-bar-wrap"><div class="score-bar" style="width: 80%"></div></div>
+          <div class="score-val">+20%</div>
+        </div>
+        <div class="score-row">
+          <div class="score-label">Technology / Platform</div>
+          <div class="score-bar-wrap"><div class="score-bar" style="width: 75%"></div></div>
+          <div class="score-val">+15%</div>
+        </div>
+        <div class="score-row">
+          <div class="score-label">IP Strength & FTO</div>
+          <div class="score-bar-wrap"><div class="score-bar" style="width: 60%"></div></div>
+          <div class="score-val">+8%</div>
+        </div>
+        <div class="score-row">
+          <div class="score-label">Competitive Environment</div>
+          <div class="score-bar-wrap"><div class="score-bar" style="width: 40%"></div></div>
+          <div class="score-val">−10%</div>
+        </div>
+        <div class="score-row">
+          <div class="score-label">Preclinical Data Strength</div>
+          <div class="score-bar-wrap"><div class="score-bar" style="width: 65%"></div></div>
+          <div class="score-val">+10%</div>
+        </div>
+        <div class="score-row">
+          <div class="score-label">Regulatory Pathway Clarity</div>
+          <div class="score-bar-wrap"><div class="score-bar" style="width: 50%"></div></div>
+          <div class="score-val">+5%</div>
+        </div>
+        <div style="border-top: 1px solid var(--border); margin-top: 16px; padding-top: 16px; display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted);">AGGREGATE PREMIUM: +78% → Adjusted pre-money</span>
+          <span style="font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 800; color: var(--accent);">~$71M</span>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Criterion</th>
+              <th>Below Average</th>
+              <th>Average</th>
+              <th>Exceptional</th>
+              <th>Weight</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="accent">Management Team</td>
+              <td class="danger">No exits, first-time founders</td>
+              <td>1 serial entrepreneur, mixed track record</td>
+              <td class="good">Multiple exits, KOL-backed, pharma BD experience</td>
+              <td class="mono">25%</td>
+            </tr>
+            <tr>
+              <td class="accent">Market Opportunity</td>
+              <td class="danger">&lt;$500M TAM or fragmented</td>
+              <td>$1–5B addressable</td>
+              <td class="good">$5B+ SAM, underserved, pricing power clear</td>
+              <td class="mono">20%</td>
+            </tr>
+            <tr>
+              <td class="accent">Technology Moat</td>
+              <td class="danger">Incremental, easily replicated</td>
+              <td>Novel mechanism, early IP filed</td>
+              <td class="good">Platform with broad applicability, issued IP, trade secrets</td>
+              <td class="mono">20%</td>
+            </tr>
+            <tr>
+              <td class="accent">Preclinical Package</td>
+              <td class="danger">In vitro only, weak MOA</td>
+              <td>Solid in vitro + rodent efficacy</td>
+              <td class="good">Multi-species, translatable biomarkers, validated target</td>
+              <td class="mono">15%</td>
+            </tr>
+            <tr>
+              <td class="accent">IP & FTO</td>
+              <td class="danger">No IP, FTO unclear</td>
+              <td>Provisional filed, FTO analysis pending</td>
+              <td class="good">Issued patents, clean FTO, licensed institutional IP</td>
+              <td class="mono">10%</td>
+            </tr>
+            <tr>
+              <td class="accent">Competitive Landscape</td>
+              <td class="danger">Crowded, late to field</td>
+              <td>2–4 competitors, differentiated</td>
+              <td class="good">First-in-class, no approved treatments, regulatory fast track</td>
+              <td class="mono">10%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- COMPS -->
+    <div class="section" id="comps">
+      <span class="section-eyebrow">Protocol 04</span>
+      <h2 class="section-title">Comparable Deals & Benchmarks</h2>
+      <div class="section-rule"></div>
+      <p class="section-sub">
+        Always triangulate rNPV with real transaction data. Use three layers: (1) private venture round comps by stage/modality, (2) Big Pharma licensing/buyout precedents, (3) public biotech EV benchmarks for late-stage anchoring.
+      </p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Modality</th>
+              <th>Stage</th>
+              <th>Typical Deal Value / Valuation</th>
+              <th>Key Metric</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="pill pill-blue">Small Molecule</span></td>
+              <td>Series A (pre-IND)</td>
+              <td class="mono">$30–80M pre</td>
+              <td class="mono">N/A (team + platform)</td>
+              <td style="color: var(--muted); font-size: 12px;">Driven by target validation quality</td>
+            </tr>
+            <tr>
+              <td><span class="pill pill-blue">Small Molecule</span></td>
+              <td>Phase Ib PoC</td>
+              <td class="mono">$150–500M pre</td>
+              <td class="mono">EV ~0.3–0.6× peak sales</td>
+              <td style="color: var(--muted); font-size: 12px;">Clean safety data critical</td>
+            </tr>
+            <tr>
+              <td><span class="pill pill-green">Biologic / mAb</span></td>
+              <td>Series A (IND-ready)</td>
+              <td class="mono">$60–150M pre</td>
+              <td class="mono">N/A</td>
+              <td style="color: var(--muted); font-size: 12px;">Higher on next-gen formats</td>
+            </tr>
+            <tr>
+              <td><span class="pill pill-green">Biologic / mAb</span></td>
+              <td>Phase II mid-read</td>
+              <td class="mono">$300M–1.5B pre</td>
+              <td class="mono">EV ~0.5–1.2× peak sales</td>
+              <td style="color: var(--muted); font-size: 12px;">Large premium for positive data</td>
+            </tr>
+            <tr>
+              <td><span class="pill pill-orange">Cell Therapy</span></td>
+              <td>Series B (Phase I)</td>
+              <td class="mono">$200–600M pre</td>
+              <td class="mono">EV ~0.4–0.8× peak sales</td>
+              <td style="color: var(--muted); font-size: 12px;">Manufacturing risk heavily penalized</td>
+            </tr>
+            <tr>
+              <td><span class="pill pill-red">Gene Therapy</span></td>
+              <td>Series B (Phase I)</td>
+              <td class="mono">$150–500M pre</td>
+              <td class="mono">Per-indication value</td>
+              <td style="color: var(--muted); font-size: 12px;">Delivery vector IP critical</td>
+            </tr>
+            <tr>
+              <td><span class="pill pill-blue">RNA / Oligo</span></td>
+              <td>Series A (platform)</td>
+              <td class="mono">$80–300M pre</td>
+              <td class="mono">Platform comps dominant</td>
+              <td style="color: var(--muted); font-size: 12px;">Delivery differentiation key</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="mt-24">
+        <div style="font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 16px;">Big Pharma Licensing Deal Benchmarks (upfront value as signal)</div>
+        <div class="benchmark-row" style="border-bottom: 1px solid var(--border); padding-bottom: 8px;">
+          <div style="font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted);">STAGE</div>
+          <div style="font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted);">UPFRONT RANGE</div>
+          <div style="font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); text-align: right;">TOTAL BIOBUCKS</div>
+          <div style="font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); text-align: right;">ROYALTY</div>
+        </div>
+        <div class="benchmark-row">
+          <div class="bm-stage">Pre-clinical</div>
+          <div><div class="bm-bar" style="width: 15%; background: rgba(77,159,255,0.4);">$5–50M</div></div>
+          <div class="bm-val mono-text">$100–500M</div>
+          <div class="bm-val mono-text">5–10%</div>
+        </div>
+        <div class="benchmark-row">
+          <div class="bm-stage">Phase I</div>
+          <div><div class="bm-bar" style="width: 30%; background: rgba(77,159,255,0.5);">$20–150M</div></div>
+          <div class="bm-val mono-text">$300M–1B</div>
+          <div class="bm-val mono-text">8–15%</div>
+        </div>
+        <div class="benchmark-row">
+          <div class="bm-stage">Phase II PoC</div>
+          <div><div class="bm-bar" style="width: 60%; background: rgba(0,229,192,0.45);">$50–500M</div></div>
+          <div class="bm-val mono-text">$500M–3B</div>
+          <div class="bm-val mono-text">12–20%</div>
+        </div>
+        <div class="benchmark-row">
+          <div class="bm-stage">Phase III / NDA</div>
+          <div><div class="bm-bar" style="width: 90%; background: rgba(0,229,192,0.6);">$200M–2B+</div></div>
+          <div class="bm-val mono-text">$1–8B+</div>
+          <div class="bm-val mono-text">15–25%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REAL OPTIONS -->
+    <div class="section" id="real-options">
+      <span class="section-eyebrow">Protocol 05</span>
+      <h2 class="section-title">Real Options & Platform Value</h2>
+      <div class="section-rule"></div>
+      <p class="section-sub">
+        Platform companies — where the primary product is the technology engine, not a single drug — require an additional valuation layer. Real options theory captures the value of future choices that management can make depending on how early data unfolds.
+      </p>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-label">Option Type</div>
+          <div class="card-title">Option to Expand</div>
+          <div class="card-body">Additional indications, geographies, or combination therapies enabled by a positive Phase II read. Value = PV of follow-on programs × probability of exercise. Key driver for platform companies.</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Option Type</div>
+          <div class="card-title">Option to Abandon</div>
+          <div class="card-body">The ability to stop development if early signals are negative. Value is in preserving capital. Negative optionality that is often ignored but substantially reduces downside in preclinical bets.</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Option Type</div>
+          <div class="card-title">Option to Partner/License</div>
+          <div class="card-body">Licensing upfront or milestone rights to a Big Pharma at Phase II. Sets a floor on program value. Particularly valuable in capital-intensive modalities (CGT, gene editing).</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Option Type</div>
+          <div class="card-title">Option to Defer</div>
+          <div class="card-body">Ability to wait for competitive landscape clarity, pricing precedents, or manufacturing improvements before committing capital to Phase III. Especially relevant in crowded indications.</div>
+        </div>
+      </div>
+      <div class="callout mt-16">
+        <strong>Platform Valuation Rule of Thumb</strong>
+        Model the lead program via rNPV. Then add platform premium = (number of credible follow-on indications × 0.3) × lead program rNPV. Discount aggressively for execution risk. For very early platforms, the premium typically adds 50–200% over the single-asset value.
+      </div>
+    </div>
+
+    <!-- TECHBIO -->
+    <div class="section" id="techbio">
+      <span class="section-eyebrow">Protocol 05B</span>
+      <h2 class="section-title">TechBio / AI-Native Platform Valuation</h2>
+      <div class="section-rule"></div>
+      <p class="section-sub">
+        TechBio companies — where AI, machine learning, or computational biology is core to the value creation engine, not just a tool — require a fundamentally different valuation lens. Standard rNPV systematically undervalues these companies by treating the platform as invisible.
+      </p>
+
+      <div class="callout">
+        <strong>ARTIS Ventures Principle (coined "TechBio")</strong>
+        "Even if the drug didn't make it through the FDA, there's still value on the table because of the technology — how to make the drug, or how to discover the drug. That's the key difference." The platform has independent value from any single drug outcome. This creates a valuation floor that pure rNPV misses entirely.
+      </div>
+
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-label">Value Layer 1</div>
+          <div class="card-title">Drug Pipeline (rNPV)</div>
+          <div class="card-body">Model individual programs using standard rNPV. Sum across pipeline. This is the floor — what the company is worth even if the platform generates zero additional value beyond current programs. Weight by PTRS and stage.</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Value Layer 2</div>
+          <div class="card-title">Platform Productivity Premium</div>
+          <div class="card-body">How many new drug candidates can the platform generate per year? At what cost vs. traditional discovery? Model platform as a drug-generation machine: (new programs/year × avg rNPV per program × platform survival rate) discounted at a technology business rate (20–30%), not a drug development rate.</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Value Layer 3</div>
+          <div class="card-title">Data Asset Value</div>
+          <div class="card-body">Proprietary biological datasets, experimental output from AI-driven labs, and validated model weights constitute defensible moats. Value as a pharma partnership asset: benchmark against deal upfronts for data/platform access deals (Novo Nordisk–Valo: $60M upfront, $2.7B in milestones). Data assets can be licensed independently of drug outcomes.</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Value Layer 4</div>
+          <div class="card-title">Tech Sector Multiple (Revenue)</div>
+          <div class="card-body">If the company generates platform SaaS/licensing revenue (CRO/pharma partnerships), apply a hybrid tech-biotech multiple. AI-driven discovery platforms with recurring revenue can trade at 8–15× ARR — closer to a technology multiple than a biotech multiple. Key: revenue must be real and contract-backed, not "strategic interest."</div>
+        </div>
+      </div>
+
+      <div class="table-wrap mt-16">
+        <table>
+          <thead>
+            <tr><th>TechBio Company Type</th><th>Primary Valuation Method</th><th>Key Value Driver</th><th>2024–25 Comp Range</th><th>Example</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="accent">AI Drug Discovery (pipeline-owning)</td>
+              <td>rNPV + Platform Premium</td>
+              <td>Clinical assets + model quality</td>
+              <td class="mono">$500M–$3B+</td>
+              <td>Xaira ($1B Series A), Insilico Medicine</td>
+            </tr>
+            <tr>
+              <td class="accent">AI Drug Discovery (partnership-first)</td>
+              <td>Deal comps + Data asset value</td>
+              <td>Partnership deal quality, data moat</td>
+              <td class="mono">$200M–$1B</td>
+              <td>Recursion pre-merger, Schrödinger</td>
+            </tr>
+            <tr>
+              <td class="accent">Protein / Molecular Design Platform</td>
+              <td>Platform Premium + Real Options</td>
+              <td>Model capability, data generated</td>
+              <td class="mono">$300M–$1.5B</td>
+              <td>EvolutionaryScale ($142M seed)</td>
+            </tr>
+            <tr>
+              <td class="accent">Lab Automation / "AI Science Factory"</td>
+              <td>Revenue multiple + Platform</td>
+              <td>Throughput, data output, customer contracts</td>
+              <td class="mono">$500M–$1.5B</td>
+              <td>Lila Sciences ($1.3B valuation, Series A)</td>
+            </tr>
+            <tr>
+              <td class="accent">AI-First Small Molecule (pre-IND)</td>
+              <td>Scorecard + early rNPV</td>
+              <td>Target rationale + team + compute access</td>
+              <td class="mono">$50–200M pre-money</td>
+              <td>Terray, Generate Biomedicines</td>
+            </tr>
+            <tr>
+              <td class="accent">Foundation Model for Biology</td>
+              <td>Tech-sector comps + strategic value</td>
+              <td>Model performance benchmarks, broad applicability</td>
+              <td class="mono">$300M–$2B+</td>
+              <td>Isomorphic Labs ($600M, $1.3B val.)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="two-col mt-16">
+        <div>
+          <div style="font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 14px;">TechBio Diligence Checklist</div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Question</th><th>What to Look For</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td class="accent">AI Claim Validity</td>
+                  <td>Can the team prove the AI is doing the work, not just branding? Show prospective validation, not retrospective fitting.</td>
+                </tr>
+                <tr>
+                  <td class="accent">Data Ownership</td>
+                  <td>Is the proprietary data actually proprietary? Who owns it under pharma partnerships? CDA/IP terms matter enormously.</td>
+                </tr>
+                <tr>
+                  <td class="accent">Compute Moat</td>
+                  <td>Is compute access a real barrier, or will it be commoditized? Durable moats are in data + model architecture, not GPU access alone.</td>
+                </tr>
+                <tr>
+                  <td class="accent">Wet Lab Integration</td>
+                  <td>Does the company generate its own experimental data, or rely on public datasets? Self-generating platforms are more defensible.</td>
+                </tr>
+                <tr>
+                  <td class="accent">Drug vs. Platform Revenue</td>
+                  <td>Is the company a drug developer that uses AI, or a technology company that happens to make drugs? Valuation method follows the business model.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div>
+          <div class="callout" style="margin-bottom: 12px;">
+            <strong>Red Flag: AI Washing</strong>
+            The most common TechBio failure mode: applying ML to biology without genuine predictive power. Ask for prospective validation experiments — where the model made a prediction, then the prediction was tested wet-lab. Retrospective fitting of historical data does not validate an AI platform. Require at least 2 prospective successes before assigning any platform premium.
+          </div>
+          <div class="callout warn">
+            <strong>Key Insight: 2024 Recursion–Exscientia Merger</strong>
+            The $688M all-stock acquisition validated that investors pay for AI platforms and data assets independent of individual drug outcomes. Recursion paid for Exscientia's ML models and pharma partnership infrastructure — not its drug pipeline. This is the first major public proof point for the platform floor valuation concept.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCIENCE DILIGENCE -->
+    <div class="section" id="science">
+      <span class="section-eyebrow">Protocol 06</span>
+      <h2 class="section-title">Science & IP Diligence</h2>
+      <div class="section-rule"></div>
+      <p class="section-sub">This is where biotech investing differs most from other domains. The scientific diligence must come before financial modeling — garbage-in on PoTS assumptions destroys the model.</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Domain</th><th>Key Questions</th><th>Green Signal</th><th>Red Signal</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="accent">Target Biology</td>
+              <td>Is the target genetically validated? Human data support?</td>
+              <td class="good">GWAS / Mendelian randomization support, loss-of-function data</td>
+              <td class="danger">Animal-only rationale, no human genetics link</td>
+            </tr>
+            <tr>
+              <td class="accent">Mechanism of Action</td>
+              <td>Is MOA fully elucidated? On-target selectivity?</td>
+              <td class="good">Structural biology confirmed, selectivity panel clean</td>
+              <td class="danger">"We think it works through X" without direct evidence</td>
+            </tr>
+            <tr>
+              <td class="accent">Preclinical Package</td>
+              <td>Which species? Biomarkers? Translated to humans?</td>
+              <td class="good">Multi-species, biomarker-driven, PoC in disease-relevant model</td>
+              <td class="danger">Cell lines only, efficacy only at high/toxic doses</td>
+            </tr>
+            <tr>
+              <td class="accent">IP Landscape</td>
+              <td>Patent breadth? Expiry? FTO? Continuation strategy?</td>
+              <td class="good">Composition of matter + method of treatment, 15+ years runway</td>
+              <td class="danger">Process patents only, third-party blocking patents, no FTO analysis</td>
+            </tr>
+            <tr>
+              <td class="accent">Manufacturing</td>
+              <td>Can it be made at scale? COGS trajectory?</td>
+              <td class="good">CDMOs identified, COGS model credible, no exotic raw materials</td>
+              <td class="danger">No CMC work, biologic with unproven manufacturing process</td>
+            </tr>
+            <tr>
+              <td class="accent">Regulatory Path</td>
+              <td>Pre-IND meeting? Breakthrough/ODD/RMAT designation?</td>
+              <td class="good">Pre-IND meeting held, FDA agrees on endpoints, designation obtained</td>
+              <td class="danger">No FDA interaction, unclear endpoint, non-precedented indication</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TEAM -->
+    <div class="section" id="team">
+      <span class="section-eyebrow">Protocol 07</span>
+      <h2 class="section-title">Team Assessment</h2>
+      <div class="section-rule"></div>
+      <div class="two-col">
+        <div>
+          <div class="callout">
+            <strong>The #1 predictor of success</strong>
+            In early-stage biotech, team quality explains more variance in outcomes than any scientific parameter. The company will pivot. The science will surprise. Only great teams navigate that successfully.
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Role</th><th>Must-Have</th><th>Nice-to-Have</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td class="accent">CEO</td>
+                  <td>Prior pharma/biotech leadership, fundraising track record</td>
+                  <td>Prior exit, FDA approval experience</td>
+                </tr>
+                <tr>
+                  <td class="accent">CSO</td>
+                  <td>Deep domain expertise, publication record in target area</td>
+                  <td>Industry translation experience (not only academic)</td>
+                </tr>
+                <tr>
+                  <td class="accent">CMO</td>
+                  <td>Clinical trial design, KOL network in target indication</td>
+                  <td>FDA reviewer background, drug approval experience</td>
+                </tr>
+                <tr>
+                  <td class="accent">CFO / BizDev</td>
+                  <td>Biotech financing experience, partnership deal exposure</td>
+                  <td>Investment banking or pharma BD background</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div>
+          <div class="scorecard" style="margin-bottom: 0;">
+            <div class="scorecard-title">Team Risk Factors</div>
+            <div style="font-size: 12.5px; margin-bottom: 12px;">
+              <span class="pill pill-red">CRITICAL RISK</span>
+              <p style="color: var(--muted); margin-top: 6px; line-height: 1.65;">Academic founder(s) with no plans to hire an operating CEO. Science-only team with no clinical development or regulatory experience. Founder conflicts or IP ownership disputes.</p>
+            </div>
+            <div style="font-size: 12.5px; margin-bottom: 12px;">
+              <span class="pill pill-orange">MEDIUM RISK</span>
+              <p style="color: var(--muted); margin-top: 6px; line-height: 1.65;">Thin management bench, over-reliance on one founder. No clinical advisor or KOL engaged in the primary indication. Misaligned incentive structures.</p>
+            </div>
+            <div style="font-size: 12.5px;">
+              <span class="pill pill-green">POSITIVE SIGNAL</span>
+              <p style="color: var(--muted); margin-top: 6px; line-height: 1.65;">Prior successful drug developer on founding team. SAB includes field-defining KOLs who are active, not just named. Industry co-founder or operator already in seat.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MARKET -->
+    <div class="section" id="market">
+      <span class="section-eyebrow">Protocol 08</span>
+      <h2 class="section-title">Market & Competitive Analysis</h2>
+      <div class="section-rule"></div>
+      <p class="section-sub">Biotech market sizing is notoriously inflated. Apply incidence-based modeling rather than prevalence-based forecasts. Anchor to realistic penetration curves and treatment duration assumptions.</p>
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-label">TAM Methodology</div>
+          <div class="card-title">Incidence × Treatment Rate</div>
+          <div class="card-body">New patients per year × diagnosis rate × treatment rate × % who reach target therapy × annual cost. Far more conservative and defensible than top-down estimates.</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Competitive Moat</div>
+          <div class="card-title">Differentiation Framework</div>
+          <div class="card-body">First-in-class vs. best-in-class vs. fast-follower. Assess: efficacy delta, dosing convenience, safety profile, patient access. Needs a credible answer on why payers will reimburse.</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Pricing Power</div>
+          <div class="card-title">ICER & Reimbursement</div>
+          <div class="card-body">Model an ICER (incremental cost-effectiveness ratio) for the indication. $150K/QALY is roughly the US payer threshold. Gene therapies and rare disease may support $500K–$3M+.</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Competitive Timeline</div>
+          <div class="card-title">Entrant Risk</div>
+          <div class="card-body">Map the Phase I/II competitive pipeline (clinicaltrials.gov). Time to market for #1 competitor relative to your company. Assess risk of new entrant data readouts compressing your window.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RED FLAGS -->
+    <div class="section" id="redflags">
+      <span class="section-eyebrow">Protocol 09</span>
+      <h2 class="section-title">Red Flags & Deal Killers</h2>
+      <div class="section-rule"></div>
+      <div class="callout danger">
+        <strong>Automatic Pass Criteria</strong>
+        Any of the following should trigger a no-invest decision regardless of the science narrative.
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Category</th><th>Red Flag</th><th>Why It Matters</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="danger">IP</td>
+              <td>Key patents owned by founding institution with no executed license</td>
+              <td>Company has no protectable asset; institution can license elsewhere</td>
+            </tr>
+            <tr>
+              <td class="danger">Science</td>
+              <td>Reproducibility concerns — key results from single lab, never replicated</td>
+              <td>Preclinical package may collapse on independent replication</td>
+            </tr>
+            <tr>
+              <td class="danger">Team</td>
+              <td>Founders unwilling to hire an experienced CEO / CMO</td>
+              <td>Scaling clinical operations requires professional management</td>
+            </tr>
+            <tr>
+              <td class="danger">Regulatory</td>
+              <td>No FDA pre-IND meeting, novel endpoint with no precedent</td>
+              <td>Approval risk dramatically elevated without regulatory alignment</td>
+            </tr>
+            <tr>
+              <td class="danger">Competitive</td>
+              <td>Big Pharma already in Phase III with equivalent mechanism</td>
+              <td>First-mover likely to capture market; follower faces pricing erosion and label battles</td>
+            </tr>
+            <tr>
+              <td class="danger">Cap Table</td>
+              <td>Prior round at higher valuation; down round economics required</td>
+              <td>Misaligned incentives, potential antidilution provisions creating structural issues</td>
+            </tr>
+            <tr>
+              <td class="danger">Manufacturing</td>
+              <td>COGS/dose exceeds willingness-to-pay ceiling at any scale</td>
+              <td>No commercial path regardless of clinical success</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- INVESTOR LENS -->
+    <div class="section" id="investor-lens">
+      <span class="section-eyebrow">Protocol 09B</span>
+      <h2 class="section-title">Investor Intelligence — How the Top Funds Actually Evaluate</h2>
+      <div class="section-rule"></div>
+      <p class="section-sub">
+        Synthesized from public statements, fund strategies, and frameworks from the 15 most active biotech investors globally (2024–25). Each firm's distinctive methodology offers a lens to stress-test your own thesis.
+      </p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Investor</th><th>AUM / Rank</th><th>Entry Stage Preference</th><th>Distinctive Methodology</th><th>Key Signal for Valuation</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="accent">OrbiMed</td>
+              <td class="mono">~$18B / #1</td>
+              <td>Seed → public equity</td>
+              <td>Peak sales-anchored rNPV; uses Bloomberg/Visible Alpha consensus plus EV/net cash ratios for public-stage anchoring</td>
+              <td class="good">EV/peak sales comps across full portfolio</td>
+            </tr>
+            <tr>
+              <td class="accent">RA Capital</td>
+              <td class="mono">~$12.6B / #2</td>
+              <td>Pre-clinical → commercial; multi-stage</td>
+              <td>Science-first gate before any financial modeling; evidence-based investing; NPV modeling taught as core skill in RA University. Increasingly prefers clinical data or strong animal validation before follow-on.</td>
+              <td class="good">Biological rationale + evidence quality score</td>
+            </tr>
+            <tr>
+              <td class="accent">GV (Google Ventures)</td>
+              <td class="mono">~$3.5B / #3</td>
+              <td>Early stage; TechBio emphasis</td>
+              <td>Technology capability assessment layered onto biotech diligence; AI/ML team quality assessed alongside biology. Data infrastructure and compute access as moat.</td>
+              <td class="warn">AI platform capability benchmarks</td>
+            </tr>
+            <tr>
+              <td class="accent">General Catalyst</td>
+              <td class="mono">~$3.5B / #4</td>
+              <td>Early to growth; health system angle</td>
+              <td>Unique "health assurance" thesis: values commercial adoption pathway into health systems alongside drug efficacy. Payer access strategy weighted heavily.</td>
+              <td class="warn">Healthcare adoption curve + payer strategy</td>
+            </tr>
+            <tr>
+              <td class="accent">Novo Holdings</td>
+              <td class="mono">€142B / #6</td>
+              <td>Late pre-clinical → clinical (preferred)</td>
+              <td>Late preclinical/clinical stage entry; Board-level engagement; leverages Novo Nordisk scientific and commercial network for diligence. GLP-1 ecosystem lens on metabolic diseases. Expanding into quantum+AI convergence.</td>
+              <td class="good">De-risked clinical data + strategic fit with pharma pipeline</td>
+            </tr>
+            <tr>
+              <td class="accent">ARCH Venture Partners</td>
+              <td class="mono">~$12B / #11</td>
+              <td>Seed / company co-creation</td>
+              <td>Company-builder model: sources science from academic labs and national laboratories before a company exists. Conviction-sized bets ($100M+) on breakthrough science. 47 investments → $1B+ valuations under Nelsen.</td>
+              <td class="good">Scientific breakthrough potential + founder/scientist quality</td>
+            </tr>
+            <tr>
+              <td class="accent">a16z Bio+Health</td>
+              <td class="mono">$500M Bio Fund / #8</td>
+              <td>Early → growth; TechBio emphasis</td>
+              <td>Tech-native thesis applied to biology: values software-like scalability, data network effects, and AI leverage. Pharma-VC partnership model (Eli Lilly collaboration). Values execution efficiency as much as science.</td>
+              <td class="warn">Software leverage + execution efficiency metrics</td>
+            </tr>
+            <tr>
+              <td class="accent">Khosla Ventures</td>
+              <td class="mono">~$5B / #12</td>
+              <td>Early stage; platform bets</td>
+              <td>"Imagine the possible future and bring resources, people and technology to bear to shift reality." Focus on cell therapy manufacturing and novel delivery as platform bets where technology differentiation is the thesis, not the drug itself.</td>
+              <td class="warn">Technology differentiation depth + manufacturability</td>
+            </tr>
+            <tr>
+              <td class="accent">Sofinnova Partners</td>
+              <td class="mono">€4B / #14</td>
+              <td>Early → clinical; European focus</td>
+              <td>Seven specialized strategies including TechBio/Digital Medicine track. Accelerator model (Biovelocita) screens 300+ projects per cohort. Values multiple exit paths — M&A, IPO, licensing — and capital planning discipline above premature growth.</td>
+              <td class="good">Science novelty + capital efficiency + exit path clarity</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout mt-16">
+        <strong>Cross-Investor Pattern: What the Best Investors Actually Agree On</strong>
+        Despite different methodologies, the top 10 biotech investors share five consistent beliefs: (1) Science quality is the primary value driver — financial modeling amplifies conviction, doesn't create it. (2) The team must include someone who has run a Phase II trial before, or have that person coming on board. (3) Platform companies command a durable premium over single-asset companies at every stage. (4) The 2020–21 valuation benchmarks are permanently obsolete — 2024 reset is the new baseline. (5) AI/TechBio is a genuine value driver when backed by proprietary data and prospective validation, not a marketing layer.
+      </div>
+
+      <div class="two-col mt-16">
+        <div class="card">
+          <div class="card-label">ARCH Model Insight</div>
+          <div class="card-title">Conviction Sizing vs. Portfolio Spreading</div>
+          <div class="card-body">ARCH's model contradicts the "spray and pray" approach: they make large, concentrated bets ($100M+ first rounds) backed by deep scientific conviction. Robert Nelsen has said explicitly that they'd rather make 10 high-conviction bets than 50 diversified ones. Position size is a signal of thesis quality, not risk management. Reserve 40–60% of fund for follow-on in conviction portfolio companies.</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Novo / Sofinnova Insight</div>
+          <div class="card-title">Multiple Exit Pathways as Valuation Driver</div>
+          <div class="card-body">Novo Holdings and Sofinnova both explicitly value companies that can reach milestones regardless of market cycle. Companies that are structured for M&A at Phase II, licensing at Phase Ib, or IPO post-Phase II warrant a resilience premium. Companies with only one viable exit path (IPO-dependent) should carry a discount, not a premium, in the current environment.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DECISION MATRIX -->
+    <div class="section" id="decision">
+      <span class="section-eyebrow">Protocol 10</span>
+      <h2 class="section-title">Investment Decision Matrix</h2>
+      <div class="section-rule"></div>
+      <p class="section-sub">Synthesize the five methods into an investment recommendation with entry price range, deal structure, and follow-on strategy.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Method</th>
+              <th>Output</th>
+              <th>Weight (Pre-IND)</th>
+              <th>Weight (Phase II)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="accent">Scorecard (qualitative)</td>
+              <td>Premium/discount vs. benchmark pre-money</td>
+              <td class="mono good">40%</td>
+              <td class="mono warn">15%</td>
+            </tr>
+            <tr>
+              <td class="accent">Comparable Transactions</td>
+              <td>Deal-based range anchored to stage/modality</td>
+              <td class="mono good">35%</td>
+              <td class="mono">25%</td>
+            </tr>
+            <tr>
+              <td class="accent">rNPV</td>
+              <td>Probability-weighted NPV of pipeline</td>
+              <td class="mono warn">15%</td>
+              <td class="mono good">45%</td>
+            </tr>
+            <tr>
+              <td class="accent">Real Options</td>
+              <td>Platform / follow-on indication value</td>
+              <td class="mono">10%</td>
+              <td class="mono">10%</td>
+            </tr>
+            <tr>
+              <td class="accent">Peak Sales Model</td>
+              <td>EV/peak sales multiple check</td>
+              <td class="mono muted">Sanity check</td>
+              <td class="mono good">Check at 0.5–1.5×</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="two-col mt-16">
+        <div class="card">
+          <div class="card-label">Deal Structure Considerations</div>
+          <div class="card-title">Milestone-Linked Tranches</div>
+          <div class="card-body">For high-uncertainty bets, structure investment in tranches tied to de-risking milestones (IND clearance, Phase I safety readout, PoC data). Reduces binary risk; aligns founder incentives with capital deployment. In 2024–25 market, milestone structuring has become standard practice even for well-regarded teams at pre-IND stage.</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Portfolio Construction</div>
+          <div class="card-title">Conviction Sizing Model</div>
+          <div class="card-body">At PoTS of 5–10%, a portfolio of 20+ companies is needed to expect at least 1 approval — if bets are equal-sized. The ARCH model suggests instead sizing by conviction: 3–5 high-conviction lead positions (5–10% of fund each) plus a broader portfolio of smaller positions for option value. Reserve 40–60% of fund for follow-on in breakout companies.</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Exit Pathways</div>
+          <div class="card-title">M&A Is the Base Case</div>
+          <div class="card-body">Most biotech exits are M&A (pharma buyout at Phase II–III). An estimated $200B in pharma revenues face patent cliffs 2024–2028, keeping strategic acquirers active. IPO window is highly selective — only ~15% of private biotechs are estimated to meet current quality thresholds. Model base case at 5–7 years to M&A exit; structure early to be acquirable, not just fundable.</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Return Expectations</div>
+          <div class="card-title">Target Multiple by Stage</div>
+          <div class="card-body">Pre-clinical: 10× minimum target; Phase I: 5–8×; Phase II PoC: 3–5×. TechBio platforms require separate return modeling: platform productivity value + drug rNPV. Adjust for modality risk (CGT and gene editing require higher multiples). IRA impact: reduce revenue duration assumption for small molecules in common indications by 2–3 years vs. pre-IRA models.</div>
+        </div>
+      </div>
+
+      <div class="callout mt-16">
+        <strong>Final Checklist Before Committing — Updated 2025</strong>
+        (1) Has the science passed the RA Capital biology gate — independently from the financial model? (2) Is this a drug asset, a platform, or a TechBio company — and have we used the right valuation method for the category? (3) Is our entry price supported by at least two independent methods, anchored to 2024–25 benchmarks (not 2021)? (4) Have we stress-tested PTRS assumptions with an external KOL who has no financial interest? (5) What are the two or three realistic exit pathways, and can the company reach them without requiring a market cycle we can't control? (6) Have we accounted for IRA pricing dynamics on the revenue projection? (7) Can we explain in one sentence why this company will still be relevant in 10 years?
+      </div>
+    </div>
+
+  </main>
+
+</div>
+
+<!-- ══════════════ FOOTER ══════════════ -->
+<footer>
+  <span class="f-label">Tachyon Ventures — Internal Framework</span>
+  <span class="f-label">Early-to-Mid Stage Biotech + TechBio · v2.0 · 2025</span>
+</footer>
+
+<script>
+function calcRNPV() {
+  const peakSales = +document.getElementById('peakSales').value;
+  const margin    = +document.getElementById('margin').value / 100;
+  const years     = +document.getElementById('years').value;
+  const pots      = +document.getElementById('pots').value / 100;
+  const royalty   = +document.getElementById('royalty').value / 100;
+  const r         = +document.getElementById('discountRate').value / 100;
+
+  document.getElementById('peakSalesVal').textContent    = '$' + peakSales + 'M';
+  document.getElementById('marginVal').textContent       = Math.round(+document.getElementById('margin').value) + '%';
+  document.getElementById('yearsVal').textContent        = years + ' yrs';
+  document.getElementById('potsVal').textContent         = Math.round(+document.getElementById('pots').value) + '%';
+  document.getElementById('royaltyVal').textContent      = Math.round(+document.getElementById('royalty').value) + '%';
+  document.getElementById('discountRateVal').textContent = Math.round(+document.getElementById('discountRate').value) + '%';
+
+  let npv = 0;
+  for (let t = 1; t <= years + 5; t++) {
+    let sf = t <= years ? t / years : Math.max(0, 1 - (t - years) * 0.1);
+    let cf = peakSales * sf * margin * royalty;
+    npv += cf / Math.pow(1 + r, t);
+  }
+  const rnpv  = npv * pots;
+  const bear  = rnpv * 0.4;
+  const bull  = rnpv * 2.4;
+  const eL    = rnpv * 0.75;
+  const eH    = rnpv * 1.5;
+  const fmt   = v => v >= 1000 ? '$' + (v/1000).toFixed(1) + 'B' : '$' + Math.round(v) + 'M';
+
+  document.getElementById('rnpvResult').textContent = fmt(rnpv);
+  document.getElementById('rnpvRange').textContent  = 'Bear: ' + fmt(bear) + '  —  Bull: ' + fmt(bull);
+  document.getElementById('entryRange').textContent = fmt(eL) + ' – ' + fmt(eH);
+}
+
+// Active nav scroll tracking
+const sections  = document.querySelectorAll('.section');
+const sideLinks = document.querySelectorAll('.sidebar a');
+const tabLinks  = document.querySelectorAll('.tab-nav a');
+
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 130) current = s.id;
+  });
+  [...sideLinks, ...tabLinks].forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+  });
+});
+
+calcRNPV();
+</script>
+</body>
+</html>
